@@ -3,6 +3,9 @@ import { foundry, react } from "@wagmi/cli/plugins";
 import * as chains from "wagmi/chains";
 import { ATTESTATION_STATION_ADDRESS } from "@eth-optimism/atst";
 
+const COUNTER_ADDRESS ="0x4c5859f0F772848b2D91F1D83E2Fe57935348029";
+const SOCIAL_MEDIA_ADDRESS = "0x1291Be112d480055DaFd8a610b7d1e203891C274";
+
 /**
  * Wagmi cli will automatically generate react hooks from your forge contracts
  * @see https://wagmi.sh/cli/getting-started
@@ -31,6 +34,16 @@ export default defineConfig({
           [chains.optimism.id]: ATTESTATION_STATION_ADDRESS,
           [chains.optimismGoerli.id]: ATTESTATION_STATION_ADDRESS,
           [chains.foundry.id]: ATTESTATION_STATION_ADDRESS,
+        },
+        Counter: {
+          [chains.optimism.id]: COUNTER_ADDRESS,
+          [chains.optimismGoerli.id]: COUNTER_ADDRESS,
+          [chains.foundry.id]: COUNTER_ADDRESS,
+        },
+        SocialMedia: {
+          [chains.optimism.id]: SOCIAL_MEDIA_ADDRESS,
+          [chains.optimismGoerli.id]: SOCIAL_MEDIA_ADDRESS,
+          [chains.foundry.id]: SOCIAL_MEDIA_ADDRESS,
         },
       },
     }),

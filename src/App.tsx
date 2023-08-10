@@ -1,7 +1,9 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
-import { Attestooooooor } from "./components";
+import { Attestooooooor } from "./components/Attestoooooor";
+import { CounterComponent } from "./components/CounterComponent";
+import { SocialComponent } from "./components/SocialComponent";
 
 export function App() {
   /**
@@ -21,6 +23,8 @@ export function App() {
         <>
           <hr />
           <Attestooooooor />
+          <hr />
+          <SocialComponent />
           <hr />
         </>
       )}

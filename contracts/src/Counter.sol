@@ -5,6 +5,7 @@ contract Counter {
     uint256 public number = 0;
     
     event Transfer(address indexed from, address indexed to, uint256 value);
+    event Incremented(uint256 newNumber); 
 
     function setNumber(uint256 newNumber) public {
         number = newNumber;
@@ -12,5 +13,6 @@ contract Counter {
 
     function increment() public {
         number++;
+        emit Incremented(number); 
     }
 }
