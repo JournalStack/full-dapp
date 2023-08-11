@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import { Attestooooooor } from "./components/Attestoooooor";
 import { CounterComponent } from "./components/CounterComponent";
 import { SocialComponent } from "./components/SocialComponent";
+import Test from "./components/test";
 
 export function App() {
   /**
@@ -14,11 +15,10 @@ export function App() {
 
   return (
     <>
-      <h1>OP Starter Project</h1>
+      {/* <h1>OP Starter Project</h1>
 
-      {/** @see https://www.rainbowkit.com/docs/connect-button */}
-      <ConnectButton />
-
+      <ConnectButton /> */}
+      {/*
       {isConnected && (
         <>
           <hr />
@@ -27,7 +27,8 @@ export function App() {
           <SocialComponent />
           <hr />
         </>
-      )}
+      )} */}
+      <Test />
     </>
   );
 }
