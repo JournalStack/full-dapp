@@ -6,6 +6,7 @@ import { WagmiConfig } from "wagmi";
 
 import { App } from "./App";
 import { chains, config } from "./wagmi";
+import { ChakraProvider } from "@chakra-ui/react";
 
 /**
  * Root providers and initialization of app
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <WagmiConfig config={config}>
       <RainbowKitProvider chains={chains}>
-        <App />
+        <ChakraProvider>
+          <App />
+        </ChakraProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   </React.StrictMode>,

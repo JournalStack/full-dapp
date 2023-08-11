@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/edge-function-example.ts": {
+      "maxDuration": 10
+    }
+  }
+}
