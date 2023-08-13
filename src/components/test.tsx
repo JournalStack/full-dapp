@@ -24,6 +24,7 @@ import {
   useSocialMediaPostCount,
 } from "../generated";
 import { PostList } from "./PostList";
+import PostCreateds from "./PostCreateds";
 
 export default function Test() {
   const { address, isConnected } = useAccount();
@@ -37,7 +38,8 @@ export default function Test() {
   const [postUri, setPostUri] = useState("");
   const { config: socialMediaAddPostConfig, refetch: refetchPostConfig } =
     usePrepareSocialMediaAddPost({
-      args: [postUri],
+      // args: [postUri],
+      args: [commitMessage],
     });
 
   const { write: socialMediaAddPost } = useSocialMediaAddPost({
@@ -75,7 +77,8 @@ export default function Test() {
             <ConnectButton showBalance={false} />
             <Spacer />
             <Flex alignItems="center" justifyContent="flex-end">
-              {isConnected ? <Text>You got a total of 12 stars!</Text> : null}
+              {/* {isConnected ? <Text>You got a total of 12 stars!</Text> : null} */}
+              <PostCreateds />
             </Flex>
           </Stack>
           {isConnected ? <PostList /> : <Text>Connect first!</Text>}

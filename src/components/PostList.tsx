@@ -36,7 +36,8 @@ function PostElement({ postId }: Props) {
   useEffect(() => {
     // React advises to declare the async function directly inside useEffect
     async function getContent() {
-      const content = await readMessageFromIpfs(post?.at(1)?.toString() || "");
+      const content = post?.at(1)?.toString() || "";
+      // const content = await readMessageFromIpfs(post?.at(1)?.toString() || "");
       setContent(content);
     }
 
