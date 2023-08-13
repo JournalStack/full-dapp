@@ -1,15 +1,48 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useAccount } from 'wagmi';
+import axios from 'axios';
+
 import {
   useSocialMediaAddPost,
   usePrepareSocialMediaAddPost,
   useSocialMediaLikePost,
   usePrepareSocialMediaLikePost,
-  useSocialMediaPosts
+  useSocialMediaPosts,
+  useSocialMediaPostCount
 } from "../generated";
 
+const COVALENT_API_KEY = 'cqt_rQWjrCJbM99V9Kw6TTDFjDtJqmtk';
+const COVALENT_API_URL = 'https://api.covalenthq.com/v1';
+
+const supportedChains = [
+  'optimism-goerli',
+  'optimism-mainnet',
+  'base-testnet',
+  'base-mainnet',
+  'zora-testnet',
+  'zora-mainnet',
+  'eth-goerli',
+  'eth-mainnet',
+  'matic-mumbai',
+  'matic-mainnet',
+  'bsc-testnet',
+  'bsc-mainnet',
+  'avalanche-testnet',
+  'avalanche-mainnet',
+  // Add other supported chain names here
+];
+
 export function SocialComponent() {
+  const accountHookResult = useAccount();
+  const walletAddress = accountHookResult.address;
   const [postContent, setPostContent] = useState("");
   const [posts, setPosts] = useState<string[]>([]); // State to hold the posts
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [mostUsedChain, setMostUsedChain] = useState('');
+  const [transactionCount, setTransactionCount] = useState(0);
+  const [isQuickProfileOpen, setIsQuickProfileOpen] = useState(false);
+
 
   const { config } = usePrepareSocialMediaAddPost({
     args: [postContent],
@@ -35,6 +68,15 @@ export function SocialComponent() {
     }
 
   };
+
+  const handleQuickProfileOpen = () => {
+    setIsQuickProfileOpen(true);
+  };
+
+  const handleQuickProfileClose = () => {
+    setIsQuickProfileOpen(false);
+  };
+
 
   // Prepare the likePost transaction
   const { config: likePostConfig } = usePrepareSocialMediaLikePost();
@@ -80,19 +122,74 @@ export function SocialComponent() {
       }
     }, [liked, postData]);
 
+
     return (
       <div className="post">
         <button onClick={() => handleLike()} className="like-button">
           Like
         </button>
+
+        <div className="most-used-chain-badge">
+          {loading && <p>Loading...</p>}
+          {error && <p>Error: {error}</p>}
+          {mostUsedChain && <p>User {walletAddress} Most used chain: {mostUsedChain} , Total Transactions: {transactionCount} </p>}
+        </div>
         {content}
       </div>
     );
-  };
+  }
+
+
+  // Hook to get postCount
+  const { data: postCount } = useSocialMediaPostCount();
+
+  useEffect(() => {
+    if (postCount !== undefined) {
+      console.log("Post count from the smart contract:", postCount);
+    }
+  }, [postCount]);
+
+  useEffect(() => {
+    const calculateMostUsedChain = async () => {
+      try {
+        let highestTransactionCount = 0;
+        let mostUsedChainName = '';
+
+        for (const chain of supportedChains) {
+          try {
+            const transactionsSummaryResponse = await axios.get(
+              `${COVALENT_API_URL}/${chain}/address/${walletAddress}/transactions_summary/?key=${COVALENT_API_KEY}`
+            );
+
+            const transactionCount =
+              transactionsSummaryResponse.data.data.items[0]?.total_count || 0;
+
+            if (transactionCount > highestTransactionCount) {
+              highestTransactionCount = transactionCount;
+              console.log(transactionCount);
+              mostUsedChainName = chain;
+            }
+          } catch (error) {
+            console.error(`Failed to get transactions summary for ${chain}:`, error);
+          }
+        }
+
+        setMostUsedChain(mostUsedChainName);
+        setTransactionCount(highestTransactionCount);
+      } catch (error) {
+        console.error('Failed to get Transaction Summaries:', error);
+        setError('An error occurred while fetching data.');
+      }
+      setLoading(false);
+    };
+
+    setLoading(true);
+    calculateMostUsedChain();
+  }, [walletAddress]);
 
 
   return (
-    <div>
+    <div className="social-component">
       <input
         type="text"
         value={postContent}
@@ -105,7 +202,8 @@ export function SocialComponent() {
           <Post key={index} content={post} postId={index} />
         ))}
       </div>
-      <style>{`
+      <style>
+        {`
         .posts-container {
           margin-top: 20px;
         }
@@ -119,9 +217,20 @@ export function SocialComponent() {
         .like-button {
           position: absolute;
           top: 5px;
+          right: 50px;
+        }
+        .quick-profile-button {
+          position: absolute;
+          top: 5px;
           right: 5px;
         }
-      `}</style>
+        .most-used-chain-badge {
+          margin-top: 20px;
+        }
+      `}
+      </style>
     </div>
   );
 }
+
+export default SocialComponent;
