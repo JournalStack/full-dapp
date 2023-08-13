@@ -13,6 +13,8 @@ export function App() {
    */
   const { isConnected } = useAccount();
 
+  const accountHookResult = useAccount();
+
   return (
     <>
       {/* <h1>OP Starter Project</h1>
