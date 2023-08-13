@@ -8,16 +8,45 @@ import {
   TableContainer,
   Text,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { StarIcon } from "@chakra-ui/icons";
 import React, { useState } from "react";
 import { useAccount } from "wagmi";
 import { postToIPFS, readMessageFromIpfs } from "../utils/ipfs";
+import {
+  useSocialMediaRead,
+  usePrepareSocialMediaAddPost,
+  usePrepareSocialMediaLikePost,
+  useSocialMediaAddPost,
+  useSocialMediaLikePost,
+  useSocialMediaPosts,
+  useSocialMediaPostCount,
+} from "../generated";
+import { PostList } from "./PostList";
 
 export default function Test() {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
+
+  const [posts, setPosts] = useState<String[]>([]);
+
+  const [selectedPostId, setSelectedPostId] = useState<bigint>(BigInt(0));
+  // TODO: const toast = useToast();
+
   const [commitMessage, setCommitMessage] = useState("");
+  const [postUri, setPostUri] = useState("");
+  const { config: socialMediaAddPostConfig, refetch: refetchPostConfig } =
+    usePrepareSocialMediaAddPost({
+      args: [postUri],
+    });
+
+  const { write: socialMediaAddPost } = useSocialMediaAddPost({
+    ...socialMediaAddPostConfig,
+    onSuccess: (transaction) => {
+      console.log("Transaction initiated.", transaction);
+    },
+  });
+
   const submitCommit = async () => {
     if (isConnected) {
       const cid = await postToIPFS(
@@ -25,13 +54,16 @@ export default function Test() {
           postContent: commitMessage,
         }),
       );
-
-      console.log(
-        await readMessageFromIpfs(cid),
-        "this is what the CID in IPFS states",
-      );
+      setPostUri(cid);
+      if (socialMediaAddPost) {
+        refetchPostConfig();
+        console.log(socialMediaAddPostConfig, "ASDASDA", cid);
+        const result = await socialMediaAddPost();
+        console.log("Transaction sent. Transaction details:", result);
+      }
     }
   };
+
   return (
     <>
       <Box h="78vh" overflowY="scroll" alignItems="center">
@@ -46,67 +78,7 @@ export default function Test() {
               {isConnected ? <Text>You got a total of 12 stars!</Text> : null}
             </Flex>
           </Stack>
-          <Stack spacing={6}>
-            {[
-              {
-                id: 1,
-                addy: "0xAe46E37B5628947aC159F001a847E87452175D99",
-                content: "ipfs uri",
-                likes: 3,
-              },
-              {
-                id: 1,
-                addy: "0xAe46E37B5628947aC159F001a847E87452175D99",
-                content: "ipfs uri",
-                likes: 3,
-              },
-              {
-                id: 1,
-                addy: "0xAe46E37B5628947aC159F001a847E87452175D99",
-                content: "ipfs uri",
-                likes: 3,
-              },
-              {
-                id: 1,
-                addy: "0xAe46E37B5628947aC159F001a847E87452175D99",
-                content: "ipfs uri",
-                likes: 3,
-              },
-              {
-                id: 1,
-                addy: "0xAe46E37B5628947aC159F001a847E87452175D99",
-                content: "ipfs uri",
-                likes: 3,
-              },
-            ].map((e) => {
-              return (
-                <Box
-                  boxShadow={"base"}
-                  p={"6"}
-                  rounded={"md"}
-                  padding={6}
-                  key={e.id}
-                >
-                  <Stack direction={"row"}>
-                    <Text>{e.addy}</Text>
-                    <Spacer />
-                    <Flex justifyContent="flex-end">
-                      <Button
-                        isDisabled={!isConnected}
-                        rightIcon={<StarIcon />}
-                        colorScheme="red"
-                        variant="outline"
-                      >
-                        {e.likes}
-                      </Button>
-                    </Flex>
-                  </Stack>
-                  <Text>{e.content}</Text>
-                </Box>
-              );
-            })}
-          </Stack>
-
+          {isConnected ? <PostList /> : <Text>Connect first!</Text>}
           <Container
             position="fixed"
             bottom="0"

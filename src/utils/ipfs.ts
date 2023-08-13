@@ -27,11 +27,13 @@ export const postToIPFS = async (data: any): Promise<string> => {
 };
 
 export const readMessageFromIpfs = async (cid: string): Promise<any> => {
+  if (cid === "") return "no cid";
   try {
     const response = await fetch(import.meta.env.VITE_IPFS_BASE_URL + cid);
     const responseObject = await response.json();
     return responseObject.postContent;
   } catch (error) {
     console.error("IPFS error ", error);
+    return "IPFS Error content: " + cid;
   }
 };

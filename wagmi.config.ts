@@ -3,8 +3,7 @@ import { foundry, react } from "@wagmi/cli/plugins";
 import * as chains from "wagmi/chains";
 import { ATTESTATION_STATION_ADDRESS } from "@eth-optimism/atst";
 
-const COUNTER_ADDRESS ="0x4c5859f0F772848b2D91F1D83E2Fe57935348029";
-const SOCIAL_MEDIA_ADDRESS = "0x1291Be112d480055DaFd8a610b7d1e203891C274";
+const COUNTER_ADDRESS = "0x4c5859f0F772848b2D91F1D83E2Fe57935348029";
 
 /**
  * Wagmi cli will automatically generate react hooks from your forge contracts
@@ -41,9 +40,11 @@ export default defineConfig({
           [chains.foundry.id]: COUNTER_ADDRESS,
         },
         SocialMedia: {
-          [chains.optimism.id]: SOCIAL_MEDIA_ADDRESS,
-          [chains.optimismGoerli.id]: SOCIAL_MEDIA_ADDRESS,
-          [chains.foundry.id]: SOCIAL_MEDIA_ADDRESS,
+          [chains.baseGoerli.id]: "0x09D9D67ba1Fcc9942017Ea385fA468ED692dD1eB",
+          [chains.optimismGoerli.id]:
+            "0xf1dc759fff77ef4a8381f27aa32c435713b18ca9",
+          [chains.zoraTestnet.id]: "0xf072bfec8d13ef915349524c2143c7bb63c3ef7d",
+          [chains.foundry.id]: "0xf1dc759fff77ef4a8381f27aa32c435713b18ca9",
         },
       },
     }),
