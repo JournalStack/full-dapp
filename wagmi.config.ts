@@ -41,6 +41,7 @@ export default defineConfig({
         },
         SocialMedia: {
           [chains.baseGoerli.id]: "0x09D9D67ba1Fcc9942017Ea385fA468ED692dD1eB",
+          [chains.optimism.id]: "0x6ad4b032885a1e3bb4b69458aad11c05ac557f46",
           [chains.optimismGoerli.id]:
             "0xf1dc759fff77ef4a8381f27aa32c435713b18ca9",
           [chains.zoraTestnet.id]: "0xf072bfec8d13ef915349524c2143c7bb63c3ef7d",

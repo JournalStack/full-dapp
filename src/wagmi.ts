@@ -16,7 +16,7 @@ import { getDefaultWallets } from "@rainbow-me/rainbowkit";
  * @see https://wagmi.sh/react/providers/configuring-chains
  */
 const { chains, publicClient } = configureChains(
-  [optimismGoerli, baseGoerli, zoraTestnet, foundry],
+  [optimism, optimismGoerli, baseGoerli, zoraTestnet, foundry],
   [
     /**
      * Uncomment this line to use Alchemy as your provider
